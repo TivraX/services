@@ -2,6 +2,8 @@
 (() => {
   // Source copy stays in the markup/app. These translations also cover dynamic dialogs.
   const rows = [
+    ['Service chuno. Details WhatsApp par share karo.', 'Choose a service. Share your details on WhatsApp.', 'सेवा चुनें। अपनी जानकारी WhatsApp पर साझा करें।'],
+    ['Kya chahiye? Service chunte hi WhatsApp chat khulegi.', 'What do you need? Choose a service to open WhatsApp.', 'क्या चाहिए? सेवा चुनते ही WhatsApp चैट खुलेगी।'],
     ['Gaadi track karne se kaam nahi chalega.', 'Tracking trucks is not enough.', 'सिर्फ गाड़ी ट्रैक करने से काम नहीं चलेगा।'],
     ['Trips execute karni padengi.', 'You need to complete the trip.', 'ट्रिप पूरी भी करनी पड़ेगी।'],
     ['FMS + AMS · FLEET & AGGREGATOR MANAGEMENT SYSTEM', null, 'FMS + AMS · फ्लीट और एग्रीगेटर प्रबंधन प्रणाली'],
@@ -216,11 +218,22 @@
     language = supported.includes(event.target.value) ? event.target.value : 'hinglish';
     try { localStorage.setItem('tivrax.language', language); } catch {}
     applyLanguage();
+    document.dispatchEvent(new CustomEvent('tivrax:languagechange'));
   });
   window.TIVRAX_I18N = Object.freeze({
     translate,
     getLanguage: () => language,
-    whatsappMessage: () => language === 'hi' ? 'नमस्ते, मेरी गाड़ी रुक गई है। मदद चाहिए।' : language === 'en' ? 'Hello, my truck has stopped. I need assistance.' : window.TIVRAX_CONFIG.whatsappMessage
+    whatsappMessage: (serviceId) => {
+      const names = {
+        mechanic: { hinglish: 'Mistri / breakdown', en: 'Mechanic / breakdown', hi: 'मैकेनिक / गाड़ी खराब' },
+        driver: { hinglish: 'Relief driver', en: 'Relief driver', hi: 'वैकल्पिक ड्राइवर' },
+        legal: { hinglish: 'Legal / challan', en: 'Legal / challan', hi: 'कानूनी सहायता / चालान' }
+      };
+      const chosen = names[serviceId]?.[language];
+      if (language === 'hi') return (chosen ? `नमस्ते TivraX, मुझे यह सेवा चाहिए: ${chosen}।` : 'नमस्ते TivraX, मुझे गाड़ी के लिए सहायता चाहिए।') + '\n\nनाम: \nमोबाइल: \nगाड़ी नंबर: \nलोकेशन / नज़दीकी स्थान: \nसमस्या की जानकारी: ';
+      if (language === 'en') return (chosen ? `Hello TivraX, I need help with: ${chosen}.` : 'Hello TivraX, I need roadside assistance.') + '\n\nName: \nMobile: \nVehicle number: \nLocation / landmark: \nProblem details: ';
+      return (chosen ? `Namaste TivraX, mujhe is service ki zaroorat hai: ${chosen}.` : 'Namaste TivraX, meri gaadi ke liye help chahiye.') + '\n\nNaam: \nMobile: \nGaadi number: \nLocation / landmark: \nProblem ki detail: ';
+    }
   });
   applyLanguage();
 })();
