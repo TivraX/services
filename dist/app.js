@@ -21,10 +21,28 @@
   }
 
   const menu = $('.menu-button');
-  function closeMenu() { menu.setAttribute('aria-expanded', 'false'); $('#nav-links').classList.remove('open'); }
+  function closeMenu() {
+    menu.setAttribute('aria-expanded', 'false');
+    menu.setAttribute('aria-label', 'Open navigation');
+    $('#nav-links').classList.remove('open');
+  }
+  document.addEventListener('click', event => {
+    if (!event.target.closest('.nav')) closeMenu();
+  });
+  matchMedia('(max-width: 900px)').addEventListener('change', closeMenu);
+  // Keep the fixed rescue bar clear of the on-screen keyboard.
+  function updateKeyboardLayout() {
+    const editing = document.activeElement?.matches('input, select, textarea');
+    const keyboardVisible = window.visualViewport && innerHeight - window.visualViewport.height > 120;
+    document.body.classList.toggle('keyboard-open', Boolean(editing && keyboardVisible));
+  }
+  window.visualViewport?.addEventListener('resize', updateKeyboardLayout);
+  document.addEventListener('focusin', updateKeyboardLayout);
+  document.addEventListener('focusout', () => requestAnimationFrame(updateKeyboardLayout));
   menu.addEventListener('click', () => {
     const expanded = menu.getAttribute('aria-expanded') !== 'true';
     menu.setAttribute('aria-expanded', String(expanded));
+    menu.setAttribute('aria-label', expanded ? 'Close navigation' : 'Open navigation');
     $('#nav-links').classList.toggle('open', expanded);
   });
   $$('#nav-links a').forEach(link => link.addEventListener('click', closeMenu));
@@ -130,7 +148,7 @@
       else toast('Dummy helpline: +91 XXXXX XXXXX. Real number abhi add hona hai.');
     });
     $('#whatsapp-rescue').addEventListener('click', () => {
-      if (config.whatsappNumber) window.open(`https://wa.me/${config.whatsappNumber.replace(/\D/g, '')}`, '_blank', 'noopener,noreferrer');
+      if (config.whatsappNumber) window.open(`https://wa.me/${config.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(window.TIVRAX_I18N?.whatsappMessage() || config.whatsappMessage || '')}`, '_blank', 'noopener,noreferrer');
       else toast('WhatsApp ka real number abhi add hona hai. Neeche request draft taiyaar kar sakte ho.');
     });
     $$('[data-service]', content).forEach(button => button.addEventListener('click', () => {
@@ -167,7 +185,7 @@
     $('#rescue-form').addEventListener('submit', event => {
       event.preventDefault(); collect();
       if (!rescueState.coordinates && !rescueState.landmark.trim()) {
-        $('#landmark').setCustomValidity('GPS share karo ya landmark likh do.'); $('#landmark').reportValidity(); return;
+        $('#landmark').setCustomValidity(window.TIVRAX_I18N?.translate('GPS share karo ya landmark likh do.') || 'GPS share karo ya landmark likh do.'); $('#landmark').reportValidity(); return;
       }
       locationGeneration += 1; showReview(); focusContent();
     });
@@ -182,7 +200,7 @@
   }
   function showDone() {
     setTitle('Request ka draft ready hai');
-    content.innerHTML = `<div class="rescue-done"><span class="result-mark" aria-hidden="true">✓</span><h3>Details ready. Agla step: company ko bhejna.</h3><p>Yeh request abhi submit nahi hui. Dummy contact ki wajah se call, mechanic assignment ya WhatsApp updates start nahi honge.</p><button class="button orange" id="download-rescue">Download request ↓</button><button class="text-button" id="finish-rescue">Theek hai, band karo</button></div>`;
+    content.innerHTML = `<div class="rescue-done"><span class="result-mark" aria-hidden="true">✓</span><h3>Details ready. Agla step: company ko bhejna.</h3><p>Yeh request abhi submit nahi hui. Phone ya WhatsApp par humse sampark karo; automatic dispatch start nahi hua hai.</p><button class="button orange" id="download-rescue">Download request ↓</button><button class="text-button" id="finish-rescue">Theek hai, band karo</button></div>`;
     $('#download-rescue').addEventListener('click', () => download('tivrax-rescue-request.json', { type: 'rescue', ...rescueState }));
     $('#finish-rescue').addEventListener('click', () => dialog.close());
   }
@@ -200,7 +218,8 @@
   dialog.addEventListener('close', () => { locationGeneration += 1; opener?.focus(); });
   $('#year').textContent = new Intl.DateTimeFormat('en', { year: 'numeric', timeZone: 'Asia/Kolkata' }).format(new Date());
   if (config.rescuePhone) {
-    $('#footer-phone').textContent = config.rescuePhone;
-    $('.footer-contact small').textContent = config.previewMode ? 'Preview mode · dispatch not connected' : 'Rescue helpline';
+    $('#footer-phone').textContent = '+91 88878 15793';
+    $('#footer-phone').href = `tel:${config.rescuePhone}`;
+    $('.footer-contact small').textContent = 'Call or WhatsApp';
   }
 })();

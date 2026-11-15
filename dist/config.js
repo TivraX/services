@@ -2,7 +2,8 @@
 // Keep previewMode true until a real, tested intake service is connected.
 window.TIVRAX_CONFIG = Object.freeze({
   previewMode: true,
-  rescuePhone: null,
-  whatsappNumber: null,
+  rescuePhone: '+918887815793',
+  whatsappNumber: '918887815793',
+  whatsappMessage: 'Namaste, meri gaadi ruk gayi hai. Help chahiye.',
   demoEmail: null,
 });

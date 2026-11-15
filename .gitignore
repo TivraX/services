@@ -2,3 +2,9 @@
 *.tar.gz
 node_modules/
 .qa/
+
+*.pem
+*.key
+.env
+.env.*
+!.env.example

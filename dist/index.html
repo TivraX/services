@@ -2,16 +2,18 @@
 <html lang="hi-Latn">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0F2044">
   <meta name="description" content="Apni fleet, market vendors aur highway rescue. TivraX brings FMS, AMS and on-ground support into one trip workflow.">
   <title>TivraX — FMS + AMS, built to run trips</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230F2044'/%3E%3Cpath d='M15 15h12l5 10 5-10h12L38 32l12 17H37l-5-10-5 10H14l12-17Z' fill='%23FF6B1A'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./mobile.css">
   <script src="./config.js" defer></script>
+  <script src="./i18n.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -19,6 +21,7 @@
   <header class="site-header">
     <nav class="container nav" aria-label="Main">
       <a class="wordmark" href="#" aria-label="TivraX home">TIVRA<span>X</span></a>
+      <label class="language-control"><span class="sr-only">Language</span><select id="language-select" aria-label="Choose website language" data-no-translate><option value="hinglish">Hinglish</option><option value="en">English</option><option value="hi">हिन्दी</option></select></label>
       <button class="menu-button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation">☰</button>
       <div class="nav-links" id="nav-links">
         <a href="#fms">FMS</a><a href="#ams">AMS</a><a href="#rescue">Rescue</a><a href="#pricing">Pricing</a>
@@ -110,9 +113,9 @@
       <article class="plan bundle-plan"><p class="eyebrow gold">THE COMPLETE SYSTEM</p><h3>FMS + AMS</h3><p class="muted">Transporters running both</p><p class="plan-price">Built for you</p><p class="fine-print">A plan around your operations</p><a class="text-link" href="#demo">Book demo →</a></article>
     </div></section>
 
-    <section class="container section" id="demo"><div class="demo-panel"><div class="demo-intro"><p class="eyebrow">LET'S TALK TRIPS</p><h2>Rasta lamba hai.<br>TivraX saath hai.</h2><p class="muted">Book a 30-minute FMS + AMS demo on your own lanes and trucks.</p><button class="button orange" data-rescue>Emergency Rescue: Abhi help chahiye</button></div><div class="demo-form-wrap"><form id="demo-form" class="form-grid"><label>Name<input name="name" autocomplete="name" required maxlength="100" placeholder="Aapka naam"></label><label>Mobile<input name="mobile" type="tel" inputmode="tel" autocomplete="tel" required pattern="(?:\+91[\s-]?)?[6-9][0-9]{9}" title="Enter a 10-digit Indian mobile number, optionally with +91" placeholder="98XXXXXXXX"></label><label>Own trucks<select name="ownTrucks"><option>None</option><option>1–5</option><option>6–20</option><option>21–50</option><option>50+</option></select></label><label>Market trucks / month<select name="marketTrucks"><option>None</option><option>1–20</option><option>21–100</option><option>100+</option></select></label><button class="button navy" type="submit">Book FMS + AMS Demo <span aria-hidden="true">↗</span></button><p class="form-note">Preview mode · Contact details are placeholders. Your request will be prepared as a downloadable draft.</p></form><div id="demo-result" class="form-result" role="status" hidden><span class="result-mark" aria-hidden="true">✓</span><h3>Demo request ka draft ready hai.</h3><p>Abhi company ko bheja nahi gaya. Download karke rakh lo; real contact details aane par send kar sakte ho.</p><button class="button navy" id="download-demo">Download request ↓</button><button class="text-button" id="edit-demo">Details badlo</button></div></div></div></section>
+    <section class="container section" id="demo"><div class="demo-panel"><div class="demo-intro"><p class="eyebrow">LET'S TALK TRIPS</p><h2>Rasta lamba hai.<br>TivraX saath hai.</h2><p class="muted">Book a 30-minute FMS + AMS demo on your own lanes and trucks.</p><button class="button orange" data-rescue>Emergency Rescue: Abhi help chahiye</button></div><div class="demo-form-wrap"><form id="demo-form" class="form-grid"><label>Name<input name="name" autocomplete="name" required maxlength="100" placeholder="Aapka naam"></label><label>Mobile<input name="mobile" type="tel" inputmode="tel" autocomplete="tel" required pattern="(?:\+91[\s-]?)?[6-9][0-9]{9}" title="Enter a 10-digit Indian mobile number, optionally with +91" placeholder="98XXXXXXXX"></label><label>Own trucks<select name="ownTrucks"><option>None</option><option>1–5</option><option>6–20</option><option>21–50</option><option>50+</option></select></label><label>Market trucks / month<select name="marketTrucks"><option>None</option><option>1–20</option><option>21–100</option><option>100+</option></select></label><button class="button navy" type="submit">Book FMS + AMS Demo <span aria-hidden="true">↗</span></button><p class="form-note">Preview mode · Forms prepare a downloadable draft; requests are not submitted yet.</p></form><div id="demo-result" class="form-result" role="status" hidden><span class="result-mark" aria-hidden="true">✓</span><h3>Demo request ka draft ready hai.</h3><p>Abhi company ko bheja nahi gaya. Download karke rakh lo; real contact details aane par send kar sakte ho.</p><button class="button navy" id="download-demo">Download request ↓</button><button class="text-button" id="edit-demo">Details badlo</button></div></div></div></section>
   </main>
-  <footer><div class="container footer-top"><div><a class="wordmark" href="#">TIVRA<span>X</span></a><p>Move India Faster.</p></div><div class="footer-links"><a href="#fms">FMS</a><a href="#ams">AMS</a><a href="#rescue">Rescue</a><a href="#pricing">Pricing</a></div><div class="footer-contact"><span>Rescue helpline</span><strong id="footer-phone">+91 XXXXX XXXXX</strong><small>Placeholder · not active</small></div></div><div class="container footer-bottom"><span>© <span id="year">2026</span> TivraX Technologies Pvt. Ltd.</span><span>Website preview · service coverage & pricing subject to confirmation</span></div></footer>
+  <footer><div class="container footer-top"><div><a class="wordmark" href="#">TIVRA<span>X</span></a><p>Move India Faster.</p></div><div class="footer-links"><a href="#fms">FMS</a><a href="#ams">AMS</a><a href="#rescue">Rescue</a><a href="#pricing">Pricing</a></div><div class="footer-contact"><span>Rescue helpline</span><a id="footer-phone" href="tel:+918887815793">+91 88878 15793</a><small>Call or WhatsApp</small></div></div><div class="container footer-bottom"><span>© <span id="year">2026</span> TivraX Technologies Pvt. Ltd.</span><span>Website preview · service coverage & pricing subject to confirmation</span></div></footer>
   <div class="mobile-rescue"><div><strong>Gaadi ruki?</strong><span>Pehle raste ki problem solve karo.</span></div><button class="button orange" data-rescue>Help now ↗</button></div>
 
   <dialog id="rescue-dialog" aria-labelledby="rescue-title"><div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><h2 id="rescue-title">Gaadi ruki? Hum help bhejte hain.</h2><button class="close-dialog" aria-label="Close emergency rescue">✕</button></div><div class="preview-notice">Preview mode · No live dispatch. Requests are prepared as drafts.</div><div id="rescue-content"></div></dialog>

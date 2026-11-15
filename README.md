@@ -1,20 +1,33 @@
-# TivraX website
+# TivraX services website
 
-Responsive marketing website implemented from the supplied `Home3.dc.html` company reference. Separate from the existing ERP application. No build step or dependencies are required.
+Responsive static company website based on the supplied Home3.dc.html reference. Separate from the ERP application. No build step or npm dependencies.
 
-## Preview
+## Local preview
 
-Run `node server.mjs` from this directory and visit http://localhost:4173.
+Run node server.mjs and open http://localhost:4173.
 
-## Files
+## Production
 
-- `dist/index.html`: page structure and company copy.
-- `dist/styles.css`: navy, orange and cream design; responsive mobile layout.
-- `dist/app.js`: sample trip animation, comparison tabs, own/market workflow, rescue dialog, demo draft download, real opt-in browser geolocation.
-- `dist/config.js`: contact configuration. Replace null contact values after company approval. Draft forms do not submit to a backend, regardless of `previewMode`; a tested intake integration is required for live bookings.
+https://services.tivrax.in runs on its own EC2 instance. Source repository: https://github.com/TivraX/services.git.
 
-## Pending company inputs
+## Languages
 
-Rescue phone, WhatsApp, demo email, operating hours, confirmed coverage, AMS price, FMS price, bundle price, rate-control scope, privacy/terms text, and production request intake. Placeholder numbers never initiate real calls. Unconfirmed reference prices are shown as quote/early access rather than published as confirmed amounts.
+The header selector supports Hinglish (default), English and Hindi. Selection persists in localStorage. Language switching translates page copy, dynamic comparison/workflow content, rescue forms and accessible labels while preserving entered form values. Translation copy is maintained in dist/i18n.js. No external translation API is used.
 
-Personal details remain in page memory and user-initiated JSON downloads. There is no localStorage, fake OTP, fake ticket, fake successful dispatch, or simulated GPS position. Reloading discards entered details.
+## Contact and requests
+
+Footer, call and WhatsApp use +91 8887815793. Contact configuration is in dist/config.js. WhatsApp opens a prefilled message in the selected language; the visitor presses Send. Forms still prepare downloadable drafts; no live request-intake backend or dispatch is connected. Personal form details are kept in page memory and user-initiated downloads, not localStorage.
+
+Company confirmation is still needed for operating hours, service coverage, pricing, rate-control scope and legal copy.
+
+## Git push deployment
+
+See deploy/README.md. Scripts are ready for a services-only systemd timer that checks GitHub main approximately every minute and deploys new commits with atomic release switching and health-check rollback. The one-time server setup and first successful sync must be completed before automatic updates are active. No GitHub Actions runner or SSH key upload is required.
+
+## Validation
+
+node --check dist/app.js
+node --check dist/i18n.js
+python deploy/validate.py
+
+Browser QA covers all three languages, phone/tablet/desktop layouts, form flows, language persistence and preserved input state. The deployment scripts have shell syntax checks; live timer activation still requires server verification.
