@@ -2,6 +2,10 @@
 (() => {
   // Source copy stays in the markup/app. These translations also cover dynamic dialogs.
   const rows = [
+    ['Details WhatsApp par khulengi. Request bhejne ke liye Send dabao.', 'Your details will open in WhatsApp. Press Send to submit your request.', 'आपकी जानकारी WhatsApp पर खुलेगी। अनुरोध भेजने के लिए Send दबाएँ।'],
+    ['WhatsApp par Send dabao. Chat nahi khuli? Neeche tap karo.', 'Press Send in WhatsApp. Chat did not open? Tap below.', 'WhatsApp पर Send दबाएँ। चैट नहीं खुली? नीचे टैप करें।'],
+    ['WhatsApp par demo request kholo', 'Open demo request in WhatsApp', 'डेमो अनुरोध WhatsApp पर खोलें'],
+    ['Apna naam likho.', 'Please enter your name.', 'कृपया अपना नाम लिखें।'],
     ['Service chuno. Details WhatsApp par share karo.', 'Choose a service. Share your details on WhatsApp.', 'सेवा चुनें। अपनी जानकारी WhatsApp पर साझा करें।'],
     ['Kya chahiye? Service chunte hi WhatsApp chat khulegi.', 'What do you need? Choose a service to open WhatsApp.', 'क्या चाहिए? सेवा चुनते ही WhatsApp चैट खुलेगी।'],
     ['Gaadi track karne se kaam nahi chalega.', 'Tracking trucks is not enough.', 'सिर्फ गाड़ी ट्रैक करने से काम नहीं चलेगा।'],
@@ -223,6 +227,14 @@
   window.TIVRAX_I18N = Object.freeze({
     translate,
     getLanguage: () => language,
+    demoMessage: (details) => {
+      const none = language === 'hi' ? 'कोई नहीं' : language === 'en' ? 'None' : 'Koi nahi';
+      const own = details.ownTrucks === 'None' ? none : details.ownTrucks;
+      const market = details.marketTrucks === 'None' ? none : details.marketTrucks;
+      if (language === 'hi') return ['नमस्ते TivraX, मुझे FMS + AMS का डेमो चाहिए।', '', 'नाम: ' + details.name, 'मोबाइल: ' + details.mobile, 'अपनी गाड़ियाँ: ' + own, 'बाज़ार की गाड़ियाँ / महीना: ' + market].join('\n');
+      if (language === 'en') return ['Hello TivraX, I would like to book an FMS + AMS demo.', '', 'Name: ' + details.name, 'Mobile: ' + details.mobile, 'Own trucks: ' + own, 'Market trucks / month: ' + market].join('\n');
+      return ['Namaste TivraX, mujhe FMS + AMS ka demo chahiye.', '', 'Naam: ' + details.name, 'Mobile: ' + details.mobile, 'Apni gaadiyan: ' + own, 'Market gaadiyan / mahina: ' + market].join('\n');
+    },
     whatsappMessage: (serviceId) => {
       const names = {
         mechanic: { hinglish: 'Mistri / breakdown', en: 'Mechanic / breakdown', hi: 'मैकेनिक / गाड़ी खराब' },

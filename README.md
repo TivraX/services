@@ -16,7 +16,7 @@ The header selector supports Hinglish (default), English and Hindi. Selection pe
 
 ## Contact and requests
 
-Footer, call and WhatsApp use +91 8887815793. Contact configuration is in dist/config.js. WhatsApp opens a prefilled message in the selected language; the visitor presses Send. Rescue service choices open WhatsApp directly with the selected service and prompts for customer details. No rescue inputs or geolocation are collected on this website. The demo form still prepares a downloadable draft; no automatic dispatch is connected. Personal form details are kept in page memory and user-initiated downloads, not localStorage.
+Footer, call and WhatsApp use +91 8887815793. Contact configuration is in dist/config.js. WhatsApp opens a prefilled message in the selected language; the visitor presses Send. Rescue service choices open WhatsApp directly with the selected service and prompts for customer details. No rescue inputs or geolocation are collected on this website. The demo form opens WhatsApp with the entered name, mobile and both truck counts in the chosen language. The visitor presses Send; no file download or automatic dispatch is involved. Personal form details are kept in page memory and user-initiated downloads, not localStorage.
 
 Company confirmation is still needed for operating hours, service coverage, pricing, rate-control scope and legal copy.
 

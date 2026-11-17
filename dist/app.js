@@ -4,22 +4,6 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  let toastTimer;
-  function toast(message) {
-    clearTimeout(toastTimer);
-    $('#toast').textContent = message;
-    $('#toast').hidden = false;
-    toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 5000);
-  }
-  function download(filename, data) {
-    const blob = new Blob([JSON.stringify({ ...data, status: 'draft-not-submitted', createdAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url; link.download = filename;
-    document.body.append(link); link.click(); link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
   const menu = $('.menu-button');
   function closeMenu() {
     menu.setAttribute('aria-expanded', 'false');
@@ -117,17 +101,26 @@
   $$('[data-mode]').forEach(button => button.addEventListener('click', () => renderWorkflow(button.dataset.mode)));
   renderWorkflow('own');
 
-  let demoDraft;
-  $('#demo-form').addEventListener('submit', event => {
+  const demoForm = $('#demo-form');
+  const nameInput = $('[name="name"]', demoForm);
+  const mobileInput = $('[name=mobile]', demoForm);
+  nameInput.addEventListener('input', () => nameInput.setCustomValidity(''));
+  mobileInput.addEventListener('input', () => mobileInput.setCustomValidity(''));
+  demoForm.addEventListener('submit', event => {
     event.preventDefault();
-    if (!event.currentTarget.reportValidity()) return;
-    demoDraft = { type: 'demo', ...Object.fromEntries(new FormData(event.currentTarget)) };
-    $('#demo-form').hidden = true; $('#demo-result').hidden = false;
-    $('#demo-result h3').setAttribute('tabindex', '-1'); $('#demo-result h3').focus();
-  });
-  $('#download-demo').addEventListener('click', () => download('tivrax-demo-request.json', demoDraft));
-  $('#edit-demo').addEventListener('click', () => {
-    $('#demo-result').hidden = true; $('#demo-form').hidden = false; $('#demo-form input').focus();
+    nameInput.setCustomValidity(nameInput.value.trim() ? '' : (window.TIVRAX_I18N?.translate('Apna naam likho.') || 'Apna naam likho.'));
+    mobileInput.setCustomValidity(/^(?:\+91[\s-]?)?[6-9][0-9]{9}$/.test(mobileInput.value.trim()) ? '' : window.TIVRAX_I18N.translate('Enter a 10-digit Indian mobile number, optionally with +91'));
+    if (!demoForm.reportValidity()) return;
+    const details = Object.fromEntries(new FormData(demoForm));
+    details.name = details.name.trim();
+    details.mobile = details.mobile.trim();
+    const message = window.TIVRAX_I18N.demoMessage(details);
+    const number = config.whatsappNumber.replace(/\D/g, '');
+    const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+    $('#demo-whatsapp').href = url;
+    $('#demo-followup').hidden = false;
+    // Synchronous with the submit gesture; keep a visible link if popups are blocked.
+    window.open(url, '_blank', 'noopener,noreferrer');
   });
 
   const dialog = $('#rescue-dialog'), content = $('#rescue-content');
